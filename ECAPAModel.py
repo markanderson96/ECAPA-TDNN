@@ -9,10 +9,29 @@ from loss import AAMsoftmax
 from model import ECAPA_TDNN
 
 class ECAPAModel(nn.Module):
-	def __init__(self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
+	def __init__(
+		self,
+		lr,
+		lr_decay,
+		C ,
+		n_class,
+		m,
+		s,
+		test_step,
+		frontend,
+		init_filter,
+		trainable,
+		**kwargs
+	):
 		super(ECAPAModel, self).__init__()
+		self.frontend = frontend
 		## ECAPA-TDNN
-		self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
+		self.speaker_encoder = ECAPA_TDNN(
+			C = C,
+			frontend=frontend,
+			init_filter=init_filter,
+			trainable=trainable,
+		).cuda()
 		## Classifier
 		self.speaker_loss    = AAMsoftmax(n_class = n_class, m = m, s = s).cuda()
 
@@ -41,6 +60,7 @@ class ECAPAModel(nn.Module):
 			" Loss: %.5f, ACC: %2.2f%% \r"        %(loss/(num), top1/index*len(labels)))
 			sys.stderr.flush()
 		sys.stdout.write("\n")
+		breakpoint()
 		return loss/num, lr, top1/index*len(labels)
 
 	def eval_network(self, eval_list, eval_path):

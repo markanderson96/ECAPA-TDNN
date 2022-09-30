@@ -32,6 +32,9 @@ parser.add_argument('--C',       type=int,   default=1024,   help='Channel size 
 parser.add_argument('--m',       type=float, default=0.2,    help='Loss margin in AAM softmax')
 parser.add_argument('--s',       type=float, default=30,     help='Loss scale in AAM softmax')
 parser.add_argument('--n_class', type=int,   default=5994,   help='Number of speakers')
+parser.add_argument('--frontend', type=str, default='static', help='use static features or LEAF')
+parser.add_argument('--init_filter', type=str, default='mel', help='linear/mel/bark/random init for LEAF')
+parser.add_argument('--trainable', action='store_true', help='whether to train leaf')
 
 ## Command
 parser.add_argument('--eval',    dest='eval', action='store_true', help='Only do evaluation')
