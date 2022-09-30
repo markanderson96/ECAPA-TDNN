@@ -4,6 +4,7 @@ DataLoader for training
 
 import glob, numpy, os, random, soundfile, torch
 from scipy import signal
+import torchaudio
 
 class train_loader(object):
 	def __init__(self, train_list, train_path, musan_path, rir_path, num_frames, **kwargs):
@@ -30,12 +31,17 @@ class train_loader(object):
 		for index, line in enumerate(lines):
 			speaker_label = dictkeys[line.split()[0]]
 			file_name     = os.path.join(train_path, line.split()[1])
+			#if not os.path.exists(file_name):
+			#	continue
 			self.data_label.append(speaker_label)
 			self.data_list.append(file_name)
 
 	def __getitem__(self, index):
 		# Read the utterance and randomly select the segment
 		audio, sr = soundfile.read(self.data_list[index])		
+		#audio, sr = torchaudio.load(self.data_list[index])
+		#audio = audio.detach().cpu().numpy()
+		#sr = sr.detach().cpu().numpy()
 		length = self.num_frames * 160 + 240
 		if audio.shape[0] <= length:
 			shortage = length - audio.shape[0]
@@ -45,6 +51,7 @@ class train_loader(object):
 		audio = numpy.stack([audio],axis=0)
 		# Data Augmentation
 		augtype = random.randint(0,5)
+		augtype = 0
 		if augtype == 0:   # Original
 			audio = audio
 		elif augtype == 1: # Reverberation
@@ -71,7 +78,7 @@ class train_loader(object):
 		return signal.convolve(audio, rir, mode='full')[:,:self.num_frames * 160 + 240]
 
 	def add_noise(self, audio, noisecat):
-		clean_db    = 10 * numpy.log10(numpy.mean(audio ** 2)+1e-4) 
+		clean_db    = 10 * numpy.log10(numpy.mean(audio ** 2)+1e-4)
 		numnoise    = self.numnoise[noisecat]
 		noiselist   = random.sample(self.noiselist[noisecat], random.randint(numnoise[0],numnoise[1]))
 		noises = []
