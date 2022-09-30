@@ -3,7 +3,7 @@ import torch
 
 def filter_response(model):
     frontend = model.conf.features.frontend
-    filterbank = model.frontend.frontend_layers[-1].filterbank
+    filterbank = model.speaker_encoder.leaf.filterbank
     center_freqs = filterbank.center_freqs
     bandwidths = filterbank.bandwidths
     center_freqs = center_freqs.detach().cpu()

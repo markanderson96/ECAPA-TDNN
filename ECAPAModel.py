@@ -25,6 +25,7 @@ class ECAPAModel(nn.Module):
 	):
 		super(ECAPAModel, self).__init__()
 		self.frontend = frontend
+		self.init_filter = init_filter
 		## ECAPA-TDNN
 		self.speaker_encoder = ECAPA_TDNN(
 			C = C,
@@ -40,6 +41,7 @@ class ECAPAModel(nn.Module):
 		print(time.strftime("%m-%d %H:%M:%S") + " Model para number = %.2f"%(sum(param.numel() for param in self.speaker_encoder.parameters()) / 1024 / 1024))
 
 	def train_network(self, epoch, loader):
+		breakpoint()
 		self.train()
 		## Update the learning rate based on the current epcoh
 		self.scheduler.step(epoch - 1)
@@ -61,6 +63,14 @@ class ECAPAModel(nn.Module):
 			sys.stderr.flush()
 		sys.stdout.write("\n")
 		breakpoint()
+		if self.frontend is 'leaf':
+			freq_response = filter_response(self)
+			init = self.init_filter
+			np.save(
+				f'efficientleaf_{init}_{epoch}',
+				freq_response
+			)
+
 		return loss/num, lr, top1/index*len(labels)
 
 	def eval_network(self, eval_list, eval_path):
