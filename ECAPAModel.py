@@ -1,10 +1,16 @@
 '''
 This part is used to train the speaker model and evaluate the performances
 '''
-
-import torch, sys, os, tqdm, numpy, soundfile, time, pickle
+import os
+import sys
+import time
+import pickle
+import numpy as np
+import tqdm
+import torch
 import torch.nn as nn
 from tools import *
+from utils import *
 from loss import AAMsoftmax
 from model import ECAPA_TDNN
 
