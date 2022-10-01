@@ -68,7 +68,6 @@ class ECAPAModel(nn.Module):
 			sys.stderr.flush()
 		sys.stdout.write("\n")
 		if self.frontend == 'leaf':
-			breakpoint()
 			freq_response = filter_response(self)
 			init = self.init_filter
 			np.save(
