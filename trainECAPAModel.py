@@ -46,8 +46,8 @@ args = parser.parse_args()
 args = init_args(args)
 
 ## Define the data loader
-trainloader = train_loader(**vars(args))
-trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
+#trainloader = train_loader(**vars(args))
+#trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
 
 ## Search for the exist models
 modelfiles = glob.glob('%s/model_0*.model'%args.model_save_path)
@@ -90,10 +90,21 @@ while(1):
 	## Evaluation every [test_step] epochs
 	if epoch % args.test_step == 0:
 		s.save_parameters(args.model_save_path + "/model_%04d.model"%epoch)
-		EERs.append(s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path)[0])
+		EERs.append(s.eval_network(eval_args = list.Eval_list, eval_path = args.eval_path)[0])
 		print(time.strftime("%Y-%m-%d %H:%M:%S"), "%d epoch, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%"%(epoch, acc, EERs[-1], min(EERs)))
 		score_file.write("%d epoch, LR %f, LOSS %f, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%\n"%(epoch, lr, loss, acc, EERs[-1], min(EERs)))
 		score_file.flush()
+		if s.frontend == 'leaf':
+			freq_response = filter_response(s)
+			init = self.init_filter
+			np_save_path = os.path.join(
+				args.save_path,
+				f'efficientleaf_{init}_{epoch}.npy'
+			)
+			np.save(
+				np_save_path,
+				freq_response
+			)
 
 	if epoch >= args.max_epoch:
 		quit()

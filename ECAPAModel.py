@@ -67,13 +67,13 @@ class ECAPAModel(nn.Module):
 			" Loss: %.5f, ACC: %2.2f%% \r"        %(loss/(num), top1/index*len(labels)))
 			sys.stderr.flush()
 		sys.stdout.write("\n")
-		if self.frontend == 'leaf':
-			freq_response = filter_response(self)
-			init = self.init_filter
-			np.save(
-				f'efficientleaf_{init}_{epoch}',
-				freq_response
-			)
+		# if self.frontend == 'leaf':
+		# 	freq_response = filter_response(self)
+		# 	init = self.init_filter
+		# 	np.save(
+		# 		f'efficientleaf_{init}_{epoch}',
+		# 		freq_response
+		# 	)
 
 		return loss/num, lr, top1/index*len(labels)
 
