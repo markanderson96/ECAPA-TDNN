@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from torch.fft import fft
 
 def filter_response(model):
     filterbank = model.speaker_encoder.leaf.filterbank
@@ -17,7 +18,7 @@ def filter_response(model):
     return freq_responses
 
 def impulse_to_freq(impulse_responses):
-    freq_responses = torch.abs(torch.fft.fft(impulse_responses))
+    freq_responses = torch.abs(fft(impulse_responses))
     freq_responses_roll = freq_responses.roll(freq_responses.shape[1]//2, dims=1)
     freq_responses_roll = freq_responses_roll + 1E-12
     freq_responses_db = 20 * freq_responses_roll.log10()
