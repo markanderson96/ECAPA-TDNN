@@ -2,7 +2,6 @@ import numpy as np
 import torch
 
 def filter_response(model):
-    frontend = model.conf.features.frontend
     filterbank = model.speaker_encoder.leaf.filterbank
     center_freqs = filterbank.center_freqs
     bandwidths = filterbank.bandwidths
